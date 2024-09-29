@@ -1,0 +1,50 @@
+.search__form_field {
+    width: 100%;
+  }
+  
+  .error {
+    color: red;
+    font-size: 0.9em;
+  }
+  
+  @media (max-width: 768px) {
+    .label {
+      font-size: 0.9em;
+    }
+  }
+  
+@media (max-width: 768px) {
+    .task-table {
+      display: block;
+      width: 100%;
+    }
+    
+    .task-table tr {
+      display: block;
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #ddd;
+      padding: 1rem;
+    }
+    
+    .task-table th,
+    .task-table td {
+      display: block;
+      text-align: left;
+      width: 100%;
+    }
+  
+    .task-table th {
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+  
+    .task-table td {
+      margin-bottom: 0.5rem;
+    }
+  
+    .task-table .mat-header-cell, 
+    .task-table .mat-cell {
+      padding: 0.5rem;
+    }
+  }
+  

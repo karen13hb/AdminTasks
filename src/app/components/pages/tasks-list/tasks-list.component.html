@@ -1,0 +1,172 @@
+<section #lisSection class="col-12">
+    <div class="row mb-3 d-flex justify-content-end px-3">
+        <div class="col-12 col-sm-6 col-md-3 mb-2">
+            <button mat-raised-button color="primary" class="w-100" (click)="openTaskModal()">
+              <mat-icon>add</mat-icon>
+              Agregar Tarea
+            </button>
+          </div> 
+        <div class="col-12 col-sm-6 col-md-3 mb-2">
+          <select class="form-select" aria-label="Default select example" (change)="filterList($event)">
+            <option value="" disabled selected>Seleccione</option>
+            <option *ngFor="let option of options" [value]="option[1]">{{ option[0] }}</option>
+          </select>        
+        </div>       
+    </div>      
+    
+    <div class="row col-12 mb-3 m-0">
+        <div class="col-12">
+            <div class="row">
+                <div class="col-12 mb-3" *ngFor="let task of tasksList; let i = index">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column flex-md-row justify-content-between">
+                                <mat-checkbox [checked]="task.taskStatus" (change)="updateTaskStatus(i, $event.checked)"></mat-checkbox>
+                                <div class="d-flex flex-column mb-3 col-3">
+                                    <h6>Tarea:</h6>
+                                    <p class="card-title mb-0"> {{task.taskName}}  - {{task.date}}</p>
+                                </div>
+                                <div class="d-flex flex-column mb-2 col-3">
+                                    <h6>Estado</h6>
+                                    <p>{{task.taskStatus ? 'Completada' : 'Pendiente'}}</p>
+                                </div>
+                                <div class="d-flex flex-column mb-3 col-5">
+                                    <h6>Personas Asociadas:</h6>
+                                    <ul class="list-unstyled mt-2">
+                                        <li *ngFor="let person of task.people; let j = index" class="mb-1">
+                                            {{ person.name }} ({{ person.age }} años)
+                                        </li>
+                                    </ul>
+                                </div>                                
+                                <div>
+                                    <button mat-icon-button (click)="editTask(task, i)">
+                                        <mat-icon>edit</mat-icon>
+                                    </button>
+                                    <button mat-icon-button color="warn" (click)="deleteTask(i)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>   
+    <!-- <div class="row">
+        <mat-paginator class="m-3" #paginator [length]="120" [pageSizeOptions]="[10]" (page)="getData($event)" ></mat-paginator>
+    </div> -->
+
+</section>
+
+<app-modal  #FormTaskModal [title]="'Agregar tarea'">
+    <div content>
+        <form [formGroup]="taskForm" class="container-fluid">
+            <div class="row">
+                <h5>Información tarea</h5>
+            </div>
+            <div class="row">
+                <div class="col-12 col-md-6 col-lg-3">
+                    <mat-form-field class="search__form_field w-100" appearance="outline">
+                        <mat-label class="label">Nombre</mat-label>
+                        <input class="inputText" type="text" aria-label="name" matInput formControlName="taskName">
+                    </mat-form-field>
+                </div>
+                <div class="col-12 col-md-6 col-lg-3">
+                    <mat-form-field class="search__form_field w-100" appearance="outline">
+                      <mat-label class="label">Fecha</mat-label>
+                      <input class="inputText" type="date" aria-label="date" matInput formControlName="date">
+                    </mat-form-field>
+                    <!-- <p class="error" *ngIf="person.get('date')?.hasError('required') && person.get('date')?.touched">
+                      La fecha es requerida
+                    </p>
+                    <p class="error" *ngIf="person.get('date')?.hasError('invalidDate') && person.get('date')?.touched">
+                      La fecha seleccionada no es válida
+                    </p> -->
+                  </div>
+            </div>
+        
+            <div class="row d-flex align-items-center">
+                <h5 class="col-12 col-md-6 col-lg-3">Personas asociadas</h5>
+                <div class="col-12 col-md-2 col-lg-1">
+                    <button mat-icon-button (click)="addPerson()">
+                        <mat-icon>add_circle</mat-icon>
+                    </button>
+                </div>
+            </div>
+        
+            <div formArrayName="people">
+                <div *ngFor="let person of people.controls; let i = index" class="mb-3">
+                    <form class="row" [formGroupName]="i">
+                        <div class="col-12 col-md-6">
+                            <mat-form-field class="search__form_field w-100" appearance="outline">
+                                <mat-label class="label">Nombre</mat-label>
+                                <input class="inputText" type="text" aria-label="name" matInput formControlName="name">
+                            </mat-form-field>                         
+                                <p class="error" *ngIf="person.get('name')?.hasError('minlength') && person.get('name')?.touched" >
+                                    El nombre debe tener al menos 5 caracteres
+                                </p>
+                                <p class="error" *ngIf="person.get('name')?.hasError('nameExists') && person.get('name')?.touched">
+                                    El nombre ya existe
+                                </p>
+                        </div>                         
+        
+                        <div class="col-12 col-md-4">
+                            <mat-form-field class="search__form_field w-100" appearance="outline">
+                                <mat-label class="label">Edad</mat-label>
+                                <input class="inputText" type="number" aria-label="age" matInput formControlName="age">
+                            </mat-form-field>
+                            <div class="error" *ngIf="person.get('age')?.errors?.['ageTooLow'] && person.get('age')?.touched">
+                                La edad debe ser mayor a 18.
+                            </div>
+                        </div>
+        
+                        <div class="col-12 col-md-2">
+                            <button mat-icon-button (click)="removePerson(i)">
+                                <mat-icon>delete</mat-icon>
+                            </button>
+                        </div>
+        
+                        <div formArrayName="skills" class="col-12">
+                            <div class="row d-flex align-items-center">
+                                <h5 class="col-6 col-md-3">Habilidades</h5>
+                                <div class="col-6 col-md-1">
+                                    <button mat-icon-button (click)="addSkill(i)">
+                                        <mat-icon>playlist_add</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+        
+                            <div class="row" *ngFor="let skill of getSkills(i).controls; let j = index">
+                                <div class="col-10 col-md-5">
+                                    <mat-form-field class="search__form_field w-100" appearance="outline">
+                                        <mat-label class="label">Habilidad</mat-label>
+                                        <input class="inputText" type="text" aria-label="skill" matInput [formControlName]="j">
+                                    </mat-form-field>
+                                </div>
+                                <div class="col-2 col-md-1">
+                                    <button mat-icon-button (click)="removeSkill(i, j)">
+                                        <mat-icon>delete</mat-icon>
+                                    </button>
+                                </div>
+                            </div>
+        
+                            <div *ngIf="getSkills(i).errors?.['noSkills']" class="error">
+                                Debe agregar al menos una habilidad.
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </form>
+        
+    </div>
+    <div footer>
+        <button mat_button cdkFocusInitial mat-raised-button color="accent"  (click)="onSubmit()">Guardar Tarea</button>
+        <button mat_button cdkFocusInitial mat-raised-button color="primary" (click)="closeTaskModal()">
+            Cerrar
+        </button>
+
+    </div>
+</app-modal>

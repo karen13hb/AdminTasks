@@ -1,0 +1,11 @@
+<ng-template #Dialog>
+    <div class="header" mat-dialog-title>
+        <h3>{{title}}</h3>
+    </div>
+    <mat-dialog-content class="mat-typography">
+      <ng-content select="[content]"></ng-content>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end" class="footer">
+      <ng-content select="[footer]"></ng-content>
+    </mat-dialog-actions> 
+</ng-template>
