@@ -193,8 +193,15 @@ export class TasksListComponent implements OnInit{
 
   removeSkill(personIndex: number, skillIndex: number) {
     const skillsArray = this.getSkills(personIndex);
-    skillsArray.removeAt(skillIndex);
-  }
+    if (skillsArray.length > 1) {
+        skillsArray.removeAt(skillIndex);
+        skillsArray.updateValueAndValidity();
+    } else {
+        skillsArray.setErrors({ noSkills: true });
+        console.warn('No se puede eliminar la última habilidad. Debe haber al menos una habilidad.');
+    }
+}
+
 
   onSubmit(): void {
     this.taskForm.markAllAsTouched()
